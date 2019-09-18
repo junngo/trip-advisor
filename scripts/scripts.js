@@ -11,15 +11,33 @@ const API_URL = 'https://javascript-basic.appspot.com/searchLocation';
 async function handleSubmit(event) {
   event.preventDefault();
 
-  let from_date = fp_from.formatDate(new Date(), "Y-m-d");
-  let to_date = fp_to.formatDate(new Date(), "Y-m-d");
+  let from_full = fp_from.selectedDates[0];
+  let to_full = fp_to.selectedDates[0];
 
-  await fetch(API_URL+`?from=${from_date}&to=${to_date}`)
-  .then(response => response.json())
-  .then(json => {
-      console.log(json)
+  let from_date = from_full.getFullYear()+'-'+from_full.getMonth()+'-'+from_full.getDate(); 
+  let to_date = to_full.getFullYear()+'-'+to_full.getMonth()+'-'+to_full.getDate(); 
+  let req_url = API_URL+`?from=${from_date}&to=${to_date}`;
+
+  var request = new XMLHttpRequest();
+  request.open('GET', req_url, true);
+  
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      // Success!
+      var data = JSON.parse(request.responseText);
+      console.log(data);
+
+    } else {
+      // We reached our target server, but it returned an error
+  
     }
-  );
+  };
+  
+  request.onerror = function() {
+    // There was a connection error of some sort
+  };
+  
+  request.send();
 
 }
 
